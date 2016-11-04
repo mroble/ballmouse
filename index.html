@@ -18,7 +18,7 @@ var ballSpeedY = 7;
 const BRICK_W = 100;
 const BRICK_H = 50;
 const BRICK_COUNT = 4;
-var brickGrid = [ true, false, true, true];
+var brickGrid = new Array(BRICK_COUNT);
 
 
 const PADDLE_WIDTH = 100;
@@ -41,6 +41,12 @@ function updateMousePos(evt) {
 	paddleX = mouseX - PADDLE_WIDTH/2;
 }
 
+function brickReset(){
+	for (var i = 0; i < BRICK_COUNT; i++){
+		brickGrid[i] = true;
+	}
+}
+
 window.onload = function() {
 	canvas = document.getElementById('gameCanvas');
 	canvasContext = canvas.getContext('2d');
@@ -49,6 +55,7 @@ window.onload = function() {
 	setInterval(updateAll, 1000/framesPerSecond);
 
 	canvas.addEventListener('mousemove', updateMousePos);
+	brickReset();
 }
 
 function updateAll() {
