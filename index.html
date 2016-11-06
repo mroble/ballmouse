@@ -105,9 +105,40 @@ function ballBrickHandling(){
 
 		if(brickGrid[brickIndexUnderBall]) {
 		brickGrid[brickIndexUnderBall] = false;
-		ballSpeedY *=-1;
+		
+		var prevBallX = ballX - ballSpeedX;
+		var prevBallY = ballY - ballSpeedY;
+		var prevBrickCol = Math.floor(prevBallX /BRICK_W);
+		var prevBrickRow = Math.floor(prevBallY/BRICK_H);
+
+		var bothTestsFailed = true;
+
+		if(prevBrickCol != ballBrickCol) {
+			var adjBrickSide = rowColToArrayIndex(prevBrickCol, ballBrickRow);
+
+			if(brickGrid[adjBrickSide] == false) {
+				ballSpeedX *=-1;
+				bothTestsFailed = false;
+			}
+		}
+
+			if(prevBrickRow != ballBrickRow) {
+				var adjBrickTopBot = rowColToArrayIndex(ballBrickCol, prevBrickRow);
+				
+				if(brickGrid[adjBrickTopBot] == false) {
+				ballSpeedY *= -1;
+				bothTestsFailed = false;
+				}
+			}
+
+		if (bothTestsFailed) { //armpit case, prevents ball from going through 
+			ballSpeedX *= -1;
+			ballSpeedY *= -1;
+		}
+	
 		} //end of brick found
 	} //end of valid col and row
+
 } //end of ballBrickHandling func
 
 function ballPaddleHandling(){
@@ -134,7 +165,7 @@ function moveAll() {
 	ballMove();
 
 	ballBrickHandling();
-	
+
 	ballPaddleHandling();
 	
 }
