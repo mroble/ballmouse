@@ -15,12 +15,12 @@ var ballY = 75;
 var ballSpeedX = 5;
 var ballSpeedY = 7;
 
-const BRICK_W = 100;
-const BRICK_H = 50;
+const BRICK_W = 80;
+const BRICK_H = 20;
 const BRICK_GAP = 2;
-const BRICK_COUNT = 8;
-const BRICK_ROWS = 3;
-var brickGrid = new Array(BRICK_COUNT);
+const BRICK_COLS = 10;
+const BRICK_ROWS = 14;
+var brickGrid = new Array(BRICK_COLS * BRICK_ROWS);
 
 
 const PADDLE_WIDTH = 100;
@@ -44,7 +44,7 @@ function updateMousePos(evt) {
 }
 
 function brickReset(){
-	for (var i = 0; i < BRICK_COUNT; i++) {
+	for (var i = 0; i < BRICK_COLS * BRICK_ROWS ; i++) {
 		/*if(Math.random() < 0.5) {
 		brickGrid[i] = true;
 	} else {
@@ -92,6 +92,17 @@ function moveAll() {
 		ballReset();
 	}
 
+	var ballBrickCol = Math.floor(ballX / BRICK_W);
+	var ballBrickRow = Math.floor(ballY / BRICK_H);
+	var brickIndexUnderBall = rowColToArrayIndex(ballBrickCol, ballBrickRow);
+	
+	if(brickIndexUnderBall >= 0 &&
+		brickIndexUnderBall < BRICK_COLS * BRICK_ROWS) {
+		brickGrid[brickIndexUnderBall] = false;
+
+	}
+
+
 	var paddleTopEdgeY = canvas.height-PADDLE_DIST_FROM_EDGE;
 	var paddleBottomEdgeY = paddleTopEdgeY + PADDLE_THICKNESS;
 	var paddleLeftEdgeX = paddleX;
@@ -109,12 +120,25 @@ function moveAll() {
 	}
 }
 
+
+function rowColToArrayIndex (col, row) {
+	return col + BRICK_COLS * row;
+}
+
+
+
+
+
 function drawBricks() {
 	for(var eachRow = 0; eachRow < BRICK_ROWS; eachRow++) {
-		for(var i = 0;i < BRICK_COUNT; i++) {
-		if(brickGrid[i]){
-			colorRect(BRICK_W*i,BRICK_H * eachRow, BRICK_W-BRICK_GAP, BRICK_H-BRICK_GAP, 'blue');
+		for(var eachCol = 0;eachCol < BRICK_COLS; eachCol++) {
+		
+		var arrayIndex = rowColToArrayIndex(eachCol, eachRow);
+		if(brickGrid[arrayIndex]){
+			colorRect(BRICK_W*eachCol,BRICK_H * eachRow, BRICK_W-BRICK_GAP, BRICK_H-BRICK_GAP, 'blue');
 		}	//end of is this brick here
+
+
 	} //end of for each brick
 }
 } //end of drawBricks()
@@ -129,9 +153,7 @@ function drawAll() {
 
 	drawBricks();
 
-	var mouseBrickCol = mouseX / BRICK_W;
-	var mouseBrickRow = mouseY / BRICK_H;
-	colorText(mouseBrickCol + "," + mouseBrickRow, mouseX, mouseY, 'yellow');
+
 
 }
 
